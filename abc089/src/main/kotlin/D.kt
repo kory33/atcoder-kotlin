@@ -3,23 +3,31 @@ operator fun Pair<Int, Int>.minus(pair: Pair<Int, Int>) = Pair(first - pair.firs
 fun Pair<Int, Int>.manhattanTo(pair: Pair<Int, Int>) = (this - pair).manhattanLength()
 fun Pair<Int, Int>.manhattanLength() = Math.abs(first) + Math.abs(second)
 
+private fun readStrings() = readLine()!!.split(" ")
+private fun readInts() = readStrings().map { it.toInt() }
+
+private fun List<IntRange>.zipWithIndices() =
+        mapIndexed { first, range ->
+            range.map { second -> Pair(first, second) }
+        }.flatten()
+
 fun main(args: Array<String>) {
-    val (H, W, D) = readLine()!!.split(" ").map { it.toInt() }
-    val A = (0 until H).map { readLine()!!.split(" ").map { it.toInt() } }
-    val numberCache: Map<Int, Pair<Int, Int>> = {
+    val (H, W, D) = readInts()
+    val A = (0 until H).map { readInts() }
+
+    val numberCache = {
         val result = mutableMapOf<Int, Pair<Int, Int>>()
-        (0 until H).forEach { h ->
-            (0 until W).forEach { w ->
-                result[A[h][w]] = Pair(h, w)
-            }
+        (0 until H).map { (0 until W) }.zipWithIndices().forEach { pair ->
+            val (h, w) = pair
+            result[A[h][w]] = Pair(h, w)
         }
         result
     }()
-    val mpCache: Map<Int, Int> = {
+
+    val mpCache = {
         val result = mutableMapOf<Int, Int>()
         (1 until D + 1).forEach { width ->
-            var index = width
-            while (index <= H * W) {
+            (width until H * W + 1).step(width).forEach { index ->
                 val prevIndex = index - D
                 val totalMp = result[prevIndex]?.let { previous ->
                     val diff = numberCache[prevIndex]!!.manhattanTo(numberCache[index]!!)
@@ -27,7 +35,6 @@ fun main(args: Array<String>) {
                 } ?: 0
 
                 result[index] = totalMp
-                index += width
             }
         }
         result
@@ -35,7 +42,7 @@ fun main(args: Array<String>) {
 
     val Q = readLine()!!.toInt()
     (0 until Q).forEach {
-        val (L, R) = readLine()!!.split(" ").map { it.toInt() }
+        val (L, R) = readInts()
         println(mpCache[R]!! - mpCache[L]!!)
     }
 }
