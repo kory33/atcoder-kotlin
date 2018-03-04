@@ -26,16 +26,13 @@ fun main(args: Array<String>) {
 
     val mpCache = {
         val result = mutableMapOf<Int, Int>()
-        (1 until D + 1).forEach { width ->
-            (width until H * W + 1).step(width).forEach { index ->
-                val prevIndex = index - D
-                val totalMp = result[prevIndex]?.let { previous ->
-                    val diff = numberCache[prevIndex]!!.manhattanTo(numberCache[index]!!)
-                    previous + diff
-                } ?: 0
+        (1 until H * W + 1).forEach { index ->
+            val prevIndex = index - D
 
-                result[index] = totalMp
-            }
+            result[index] = result[prevIndex]?.let { previous ->
+                val diff = numberCache[prevIndex]!!.manhattanTo(numberCache[index]!!)
+                previous + diff
+            } ?: 0
         }
         result
     }()
