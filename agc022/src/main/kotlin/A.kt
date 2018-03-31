@@ -12,11 +12,8 @@ private fun <T> List<T>.pairAdjacent() = when {
 
 val lastString = ('a'..'z').reversed().joinToString("")
 
-private fun String.extendWith(selectionIndex: Int): String {
-    val chars = this.toSet()
-    val smallest = ('a'..'z').filter { !chars.contains(it) }[selectionIndex]
-    return this + smallest
-}
+private fun String.complement() = toSet().let { chars -> ('a'..'z').filter { !chars.contains(it) } }
+private fun String.extendWith(selectionIndex: Int) = this + complement()[selectionIndex]
 
 fun main(args: Array<String>) {
     val S = readLine()!!
