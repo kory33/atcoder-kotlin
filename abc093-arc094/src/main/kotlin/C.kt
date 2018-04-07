@@ -1,8 +1,6 @@
 private fun readStrings() = readLine()!!.split(" ")
 private fun readInts() = readStrings().map { it.toInt() }
 
-private inline fun <T> T.also(block: (T) -> Unit): T { block(this); return this }
-
 fun main(args: Array<String>) {
     val nums = readInts()
     val diff = nums.map { it - nums.min()!! }.sorted()
